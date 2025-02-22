@@ -1,6 +1,5 @@
-package com.UltimoEsame.U5_S7_D5.Model.Ruolo;
+package com.UltimoEsame.U5_S7_D5.Ruolo;
 
-import com.UltimoEsame.U5_S7_D5.Enum.ERuolo;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,4 +12,8 @@ public class Ruolo {
 
     @Enumerated (EnumType.STRING)
     private ERuolo nomeRuolo;
+
+    public Ruolo(ERuolo nomeRuolo) {
+        this.nomeRuolo = nomeRuolo;
+    }
 }

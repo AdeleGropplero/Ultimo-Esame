@@ -1,7 +1,6 @@
 package com.UltimoEsame.U5_S7_D5.Model;
 
-import com.UltimoEsame.U5_S7_D5.Enum.ERuolo;
-import com.UltimoEsame.U5_S7_D5.Model.Ruolo.Ruolo;
+import com.UltimoEsame.U5_S7_D5.Ruolo.Ruolo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

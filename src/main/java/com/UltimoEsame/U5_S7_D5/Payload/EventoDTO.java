@@ -1,4 +1,4 @@
-package com.UltimoEsame.U5_S7_D5.Payload.response;
+package com.UltimoEsame.U5_S7_D5.Payload;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

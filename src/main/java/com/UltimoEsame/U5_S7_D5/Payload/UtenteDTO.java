@@ -1,9 +1,7 @@
-package com.UltimoEsame.U5_S7_D5.Payload.response;
+package com.UltimoEsame.U5_S7_D5.Payload;
 
-import com.UltimoEsame.U5_S7_D5.Model.Ruolo.Ruolo;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data

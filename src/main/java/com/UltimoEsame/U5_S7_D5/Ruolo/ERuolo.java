@@ -1,4 +1,4 @@
-package com.UltimoEsame.U5_S7_D5.Enum;
+package com.UltimoEsame.U5_S7_D5.Ruolo;
 
 public enum ERuolo {
     ROLE_UTENTE,

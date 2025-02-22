@@ -5,7 +5,9 @@ import com.UltimoEsame.U5_S7_D5.Security.Services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -42,18 +44,28 @@ public class WebSecurityConfig {
         return authentication;
     }
 
+    @Bean
     // creazione di un Bean dedicato ai filtri
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/utente/").permitAll()
-                                .requestMatchers("/eventi/").permitAll()
-                                .anyRequest().authenticated());
+                        auth.requestMatchers("/utente/**").permitAll() // Permetti accesso senza autenticazione a /utente/
+                                .requestMatchers("/eventi/**").permitAll() // Permetti accesso senza autenticazione a /eventi/
+                                .anyRequest().authenticated()); // Richiede autenticazione per altre richieste
 
         http.authenticationProvider(authenticationProvider());
         return http.build();
     }
+
+/*    // Definizione del bean AuthenticationManager
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(pswEncoder())
+                .build();
+    }*/
 
 }

@@ -16,4 +16,5 @@ public class Ruolo {
     public Ruolo(ERuolo nomeRuolo) {
         this.nomeRuolo = nomeRuolo;
     }
+    public Ruolo() {}
 }

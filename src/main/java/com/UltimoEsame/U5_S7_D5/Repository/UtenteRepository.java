@@ -11,7 +11,7 @@ public interface UtenteRepository extends JpaRepository<Utente, Long> {
     public Optional<Utente> findByUsername(String username);
 
     //check login
-    public boolean existsByUsernameAndPsw(String username, String password);
+    public boolean existsByUsernameAndPassword(String username, String password);
 
     //check duplicate key
     public boolean existsByUsername(String username);

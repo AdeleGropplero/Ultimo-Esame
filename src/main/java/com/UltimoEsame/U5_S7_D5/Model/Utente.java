@@ -32,24 +32,30 @@ public class Utente {
 
     @ManyToMany
     @JoinTable(name = "utente_ruolo",
-    joinColumns = @JoinColumn(name = "utente_id"),
-    inverseJoinColumns = @JoinColumn(name = "ruolo_id"))
+            joinColumns = @JoinColumn(name = "utente_id"),
+            inverseJoinColumns = @JoinColumn(name = "ruolo_id"))
     private Set<Ruolo> ruoli = new HashSet<>();
+
 
     public Utente(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
     }
-
-/*    //metodo per assegnazione ruolo di default UTENTE_GENERICO
-    public void ruoloDefault(){
-        if (ruoli.isEmpty()){
-            Ruolo ruoloDefault = new Ruolo();
-            ruoloDefault.setNomeRuolo(ERuolo.UTENTE_GENERICO);
-            ruoli.add(ruoloDefault);
-        }
-    }*/
-
-
 }
+
+/*
+  Sicuramente questo era il metodo migliore da usare in un'azienda, ma volendo fare
+  come ci eravamo detti un ruolo di default iniziale che poi potessere essere cambiato ho deciso
+  di usare un altro approccio più semplice. Poichè per farlo con un set e una classe Ruolo
+  dovevo fare cose ben più complesse e creare una configuration e una repository anche per ruolo.
+  Motivo per cui ho deciso di usare l'enum semplice.
+
+    @ManyToMany
+    @JoinTable(name = "utente_ruolo",
+    joinColumns = @JoinColumn(name = "utente_id"),
+    inverseJoinColumns = @JoinColumn(name = "ruolo_id"))
+    private Set<Ruolo> ruoli = new HashSet<>();
+*//*    @ManyToOne
+    @JoinColumn(name = "ruolo_id")
+    private Ruolo nomeRuolo;*/

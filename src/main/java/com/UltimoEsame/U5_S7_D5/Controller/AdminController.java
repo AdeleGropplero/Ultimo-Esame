@@ -1,5 +1,6 @@
 package com.UltimoEsame.U5_S7_D5.Controller;
 
+import com.UltimoEsame.U5_S7_D5.Model.Utente;
 import com.UltimoEsame.U5_S7_D5.Payload.request.RuoloRequest;
 import com.UltimoEsame.U5_S7_D5.Ruolo.ERuolo;
 import com.UltimoEsame.U5_S7_D5.Ruolo.Ruolo;
@@ -7,10 +8,7 @@ import com.UltimoEsame.U5_S7_D5.Ruolo.RuoloService;
 import com.UltimoEsame.U5_S7_D5.Service.UtenteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin")
@@ -21,43 +19,20 @@ public class AdminController {
     @Autowired
     RuoloService ruoloService;
 
-    @PostMapping("/ruoliDefault")
-    public void insertRuolo() {
-        Ruolo ruoloAdmin = new Ruolo(ERuolo.ROLE_ADMIN);
-        ruoloService.insertRuolo(ruoloAdmin);
 
-        Ruolo ruoloOrganizzatore = new Ruolo(ERuolo.ROLE_ORGANIZZATORE);
-        ruoloService.insertRuolo(ruoloOrganizzatore);
+// Cambio Ruolo a un utente esistente. Prima di fare le operazioni dell'organizzatore
+// per creare eventi è necessario che l'admin gli dia il ruolo necessario.
+// L'admin può scegliere se dare o rimuovere un'autorizzazione. I metodi per farlo
+// sono stati creati nel service utente.
+    @PatchMapping("/{idUtente}/ruoli")
+    public ResponseEntity<String> modificaRuoloUtente(@PathVariable Long idUtente,
+                                                      @RequestParam Long idRuolo,
+                                                      @RequestParam String operazione){
+        Utente
 
-        Ruolo ruoloUtenteGenerico = new Ruolo(ERuolo.ROLE_UTENTE);
-        ruoloService.insertRuolo(ruoloUtenteGenerico);
     }
 
-    @PostMapping("/newRuolo")
-    public String insertRuolo(@RequestBody RuoloRequest ruoloRequest) {
-        ERuolo eruolo = ERuolo.valueOf(ruoloRequest.getNome()); // Converte la Stringa in ERuolo
-        Ruolo ruolo = new Ruolo(eruolo);
-        ruoloService.insertRuolo(ruolo);
-        /*
-        {
-          "nome": "ROLE_CUSTOM"
-        }
-        */
-        return "Aggiunto il ruolo " + ruolo.getNomeRuolo();
-    }
 
 }
 
-/*
-{
-     "nome": "ROLE_ADMIN"
-}
 
-{
-     "nome": "ROLE_UTENTE"
-}
-
-{
-     "nome": "ROLE_ORGANIZZATORE"
-}
-*/

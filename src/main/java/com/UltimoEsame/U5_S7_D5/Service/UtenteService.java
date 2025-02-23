@@ -25,6 +25,69 @@ public class UtenteService {
     @Autowired
     RuoloRepository ruoloRepository;
 
+    public void checkDuplicatedKey(String username, String email) {
+        if (utenteRepository.existsByEmail(email)) {
+            throw new EmailDuplicateException("Email già utilizzata!");
+        }
+        if (utenteRepository.existsByUsername(username)) {
+            throw new UsernameDuplicateException("Username già in uso!");
+        }
+    }
+
+    //CRUD UTENTE ORGANIZZATORE-----(Vedi OrganizzatoreController)-----------------------------------------------------------------------------------
+    // L'organizzatore può:
+    // VISUALIZZARE una lista eventi. (Get)
+    // VISUALIZZARE la lista dei suoi eventi con i posti rimasti. (Get)
+    // CREARE eventi. (Post)
+    // MODIFICARE i propri eventi. (Patch)
+    // CANCELLARE i propri eventi. (Delete)
+
+
+    //CRUD UTENTE ADMIN-----(Vedi AdminController)-----------------------------------------------------------------------------------
+    // L'admin può:
+    // MODIFICARE le autorizzazioni degli altri utenti.
+
+    public String modificaRuoloUtente(Long idUtente, Long idRuolo, String operazione) {
+        Utente utenteDaModificare = utenteRepository.findById(idUtente)
+                .orElseThrow(()-> new RuntimeException("Utente con non trovato"));
+
+        Ruolo ruolo = ruoloRepository.findById(idRuolo) //Ricordarsi di aggiungere la L di Long dopol'id Ruolo.
+                .orElseThrow(() -> new RuntimeException("Ruolo di default non trovato"));
+
+        if("aggiungi".equalsIgnoreCase(operazione)){
+            if (utenteDaModificare.getRuoli().contains(ruolo)){
+                return "L'utente ha già questo ruolo";
+            }
+            utenteDaModificare.getRuoli().add(ruolo);
+            utenteRepository.save(utenteDaModificare);
+            return "Ruolo " + ruolo.getNomeRuolo() + " aggiunto all'utente con ID: " + idUtente;
+        } else if ("rimuovi".equalsIgnoreCase(operazione)) {
+            if (!utenteDaModificare.getRuoli().contains(ruolo)){
+                return "L'utente non ha questo ruolo"; //se non ha il ruolo non lo puoi rimuovere.
+            }
+
+        }
+
+    }
+    public String aggiungiRuolo(Long idUtente, Long idRuolo){
+
+
+    }
+
+    public String rimuoviRuolo(Long idUtente, Long idRuolo){
+        Utente utenteDaModificare = utenteRepository.findById(idUtente).orElseThrow(()-> new RuntimeException("Utente con non trovato"));
+        Ruolo nuovoRuolo = ruoloRepository.findById(idRuolo) //Ricordarsi di aggiungere la L di Long dopol'id Ruolo.
+                .orElseThrow(() -> new RuntimeException("Ruolo di default non trovato"));
+        utenteDaModificare.getRuoli().remove(nuovoRuolo);
+        return "Ruolo " + nuovoRuolo.getNomeRuolo() + " tolto all'utente con ID: " + idUtente;
+    }
+
+    //CRUD UTENTE GENERICO-------(Vedi UtenteController)---------------------------------------------------------------------------------
+    // L'utente semplice può solo:
+    // VISUALIZZARE una lista eventi. (Get)
+    // PRENOTARE posti agli eventi disponibili (check sulla disponibilità). (Post)
+    // (EXTRA) VISUALIZZARE eventi prenotati. (Get)
+    // (EXTRA) ANNULLARE la prenotazione. (Delete)
 
     public String insertUtente(RegistrationRequest utenteRequest) {
         checkDuplicatedKey(utenteRequest.getUsername(), utenteRequest.getEmail());
@@ -35,7 +98,7 @@ public class UtenteService {
                 /*new Ruolo(ERuolo.ROLE_UTENTE)// Ruolo di default*/
         );
         // Assegno il ruolo di default "ROLE_UTENTE"
-        Ruolo ruolo = ruoloRepository.findByNomeRuolo(ERuolo.ROLE_UTENTE)
+        Ruolo ruolo = ruoloRepository.findById(1L) //Ruolo utente ha sempre id 1L.
                 .orElseThrow(() -> new RuntimeException("Ruolo di default non trovato"));
 
         utente.setRuoli(new HashSet<>(Set.of(ruolo)));
@@ -43,34 +106,6 @@ public class UtenteService {
         utenteRepository.save(utente);
         return "Utente " + utente.getUsername() + " inserito con ID: " + utente.getId();
     }
-
-    public void checkDuplicatedKey(String username, String email) {
-        if (utenteRepository.existsByEmail(email)) {
-            throw new EmailDuplicateException("Email già utilizzata!");
-        }
-        if (utenteRepository.existsByUsername(username)) {
-            throw new UsernameDuplicateException("Username già in uso!");
-        }
-    }
-
-    //CRUD UTENTE GENERICO----------------------------------------------------------------------------------------
-    // L'utente semplice può solo:
-    // VISUALIZZARE una lista eventi. (Get)
-    // PRENOTARE posti agli eventi disponibili (check sulla disponibilità). (Post)
-    // (EXTRA) VISUALIZZARE eventi prenotati. (Get)
-    // (EXTRA) ANNULLARE la prenotazione. (Delete)
-
-    //CRUD UTENTE ORGANIZZATORE----------------------------------------------------------------------------------------
-    // L'organizzatore può:
-    // VISUALIZZARE una lista eventi. (Get)
-    // VISUALIZZARE la lista dei suoi eventi con i posti rimasti. (Get)
-    // CREARE eventi. (Post)
-    // MODIFICARE i propri eventi. (Patch)
-    // CANCELLARE i propri eventi. (Delete)
-
-    //CRUD UTENTE ADMIN----------------------------------------------------------------------------------------
-    // L'admin può:
-    // MODIFICARE le autorizzazioni degli altri utenti.
 
 
     //Travasi ----------------------------------------------------------------------------------------

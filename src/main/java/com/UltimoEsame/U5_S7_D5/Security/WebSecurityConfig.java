@@ -51,7 +51,7 @@ public class WebSecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/**").permitAll() // Permetti accesso senza autenticazione a /utente/
+                        auth.requestMatchers("/**").permitAll() // Permetti accesso senza autenticazione
                 );
 
         http.authenticationProvider(authenticationProvider());

@@ -6,65 +6,69 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
 @EnableWebSecurity
 public class WebSecurityConfig {
-    @Autowired
-    UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    AuthEntryPoint authEntryPoint;
+    private UserDetailsServiceImpl userDetailsService;
 
-    //generiamo un oggetto per criptare la psw con BCryptPasswordEncoder
+    @Autowired
+    private AuthEntryPoint authEntryPoint;
+
+    // Genera un oggetto per criptare la psw con BCryptPasswordEncoder
     @Bean
-    public PasswordEncoder pswEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    //Autenticazione attraverso i dettagli del nostro utente
+    // Autenticazione attraverso i dettagli del nostro utente
     @Bean
-    public DaoAuthenticationProvider authenticationProvider(){
+    public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authentication = new DaoAuthenticationProvider();
-
         authentication.setUserDetailsService(userDetailsService); // importa tutti i dettagli utente da UserDetailsService
-
-        authentication.setPasswordEncoder(pswEncoder()); //metodo per accettare pswCriptata.
-
+        authentication.setPasswordEncoder(passwordEncoder()); // metodo per accettare psw criptata
         return authentication;
     }
 
+    // Creazione di un Bean dedicato ai filtri
     @Bean
-    // creazione di un Bean dedicato ai filtri
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/**").permitAll() // Permetti accesso senza autenticazione
+                        auth.requestMatchers("/**").permitAll()
                 );
 
         http.authenticationProvider(authenticationProvider());
         return http.build();
     }
 
-/*    // Definizione del bean AuthenticationManager
+    // Espone il bean AuthenticationManager
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(pswEncoder())
-                .build();
-    }*/
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
 
+        authenticationManagerBuilder.userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
+
+        return authenticationManagerBuilder.build();
+    }
 }

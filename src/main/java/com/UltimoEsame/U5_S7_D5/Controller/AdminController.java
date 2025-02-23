@@ -24,13 +24,13 @@ public class AdminController {
 // per creare eventi è necessario che l'admin gli dia il ruolo necessario.
 // L'admin può scegliere se dare o rimuovere un'autorizzazione. I metodi per farlo
 // sono stati creati nel service utente.
-    @PatchMapping("/{idUtente}/ruoli")
+/*    @PatchMapping("/{idUtente}/ruoli")
     public ResponseEntity<String> modificaRuoloUtente(@PathVariable Long idUtente,
                                                       @RequestParam Long idRuolo,
                                                       @RequestParam String operazione){
         Utente
 
-    }
+    }*/
 
 
 }

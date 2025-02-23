@@ -11,6 +11,7 @@ import com.UltimoEsame.U5_S7_D5.Ruolo.Ruolo;
 import com.UltimoEsame.U5_S7_D5.Ruolo.RuoloRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -24,6 +25,9 @@ public class UtenteService {
 
     @Autowired
     RuoloRepository ruoloRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public void checkDuplicatedKey(String username, String email) {
         if (utenteRepository.existsByEmail(email)) {
@@ -47,7 +51,7 @@ public class UtenteService {
     // L'admin può:
     // MODIFICARE le autorizzazioni degli altri utenti.
 
-    public String modificaRuoloUtente(Long idUtente, Long idRuolo, String operazione) {
+/*    public String modificaRuoloUtente(Long idUtente, Long idRuolo, String operazione) {
         Utente utenteDaModificare = utenteRepository.findById(idUtente)
                 .orElseThrow(()-> new RuntimeException("Utente con non trovato"));
 
@@ -68,11 +72,8 @@ public class UtenteService {
 
         }
 
-    }
-    public String aggiungiRuolo(Long idUtente, Long idRuolo){
+    }*/
 
-
-    }
 
     public String rimuoviRuolo(Long idUtente, Long idRuolo){
         Utente utenteDaModificare = utenteRepository.findById(idUtente).orElseThrow(()-> new RuntimeException("Utente con non trovato"));
@@ -94,8 +95,7 @@ public class UtenteService {
         Utente utente = new Utente(
                 utenteRequest.getUsername(),
                 utenteRequest.getEmail(),
-                utenteRequest.getPassword()
-                /*new Ruolo(ERuolo.ROLE_UTENTE)// Ruolo di default*/
+                passwordEncoder.encode(utenteRequest.getPassword())
         );
         // Assegno il ruolo di default "ROLE_UTENTE"
         Ruolo ruolo = ruoloRepository.findById(1L) //Ruolo utente ha sempre id 1L.

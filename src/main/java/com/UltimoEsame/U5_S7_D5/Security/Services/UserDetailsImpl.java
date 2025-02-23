@@ -37,7 +37,7 @@ public class UserDetailsImpl implements UserDetails {
                         .collect(Collectors.toList());
         System.out.println("FINALROLES: " + ruoliUtente);
         System.out.println("Passwordo in userDetailsImpl: " + utente.getPassword());
-        return new UserDetailsImpl(utente.getId(), utente.getUsername(), utente.getEmail(), utente.getPassword(), ruoliUtente);
+        return new UserDetailsImpl(utente.getId(), utente.getUsername(),utente.getPassword(), utente.getEmail(), ruoliUtente);
     }
 
 

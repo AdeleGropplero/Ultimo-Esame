@@ -48,13 +48,12 @@ public class RunnerApp implements CommandLineRunner {
             }
         });
 
-/*
         //Successivamente ai ruoli mi salvo in DB già un utente con ruolo admin che ha
         //accesso a diversi endpoint.
         // Le credenziali dell'admin sono salvate nel properties.
         Utente utente = new Utente(username, email, passwordEncoder.encode(password));
         Ruolo ruolo = ruoloService.getRuolo(3L); // L'admin ha id 3
         utente.setRuoli(new HashSet<>(Set.of(ruolo)));
-        utenteRepository.save(utente);*/
+        utenteRepository.save(utente);
     }
 }

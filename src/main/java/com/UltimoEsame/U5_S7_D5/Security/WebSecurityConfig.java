@@ -61,8 +61,10 @@ public class WebSecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/utente/**").permitAll() // Endpoint pubblici (registrazione/login)
-                        .requestMatchers("/utente/org/").hasAuthority("ROLE_ORGANIZZATORE") // Solo organizzatori possono gestire eventi
+                        .requestMatchers("/auth/**").permitAll()// Endpoint pubblici (registrazione/login)
+                        .requestMatchers("/utente/**").hasAuthority("ROLE_UTENTE") // Solo utenti
+                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/organizzatore/**").hasAuthority("ROLE_ORGANIZZATORE") // Solo organizzatori possono gestire eventi
                         .requestMatchers("/prenotazioni/**").hasAuthority("ROLE_USER")// Solo utenti possono prenotare
                         .anyRequest().authenticated());
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);//mancava

@@ -53,9 +53,9 @@ public class UtenteService {
 
     //CRUD UTENTE ORGANIZZATORE-----(Vedi OrganizzatoreController)-----------------------------------------------------------------------------------
     // L'organizzatore può:
+    // CREARE eventi. (Post)
     // VISUALIZZARE una lista eventi. (Get)
     // VISUALIZZARE la lista dei suoi eventi con i posti rimasti. (Get)
-    // CREARE eventi. (Post)
     // MODIFICARE i propri eventi. (Patch)
     // CANCELLARE i propri eventi. (Delete)
 
@@ -64,28 +64,31 @@ public class UtenteService {
     // L'admin può:
     // MODIFICARE le autorizzazioni degli altri utenti.
 
-/*    public String modificaRuoloUtente(Long idUtente, Long idRuolo, String operazione) {
+    public String modificaRuoloUtente(Long idUtente, Long idRuolo, String operazione) {
         Utente utenteDaModificare = utenteRepository.findById(idUtente)
-                .orElseThrow(()-> new RuntimeException("Utente con non trovato"));
+                .orElseThrow(()-> new RuntimeException("Utente con " + idUtente + " non trovato"));
 
         Ruolo ruolo = ruoloRepository.findById(idRuolo) //Ricordarsi di aggiungere la L di Long dopol'id Ruolo.
                 .orElseThrow(() -> new RuntimeException("Ruolo di default non trovato"));
 
         if("aggiungi".equalsIgnoreCase(operazione)){
             if (utenteDaModificare.getRuoli().contains(ruolo)){
-                return "L'utente ha già questo ruolo";
+                return "❌ L'utente ha già questo ruolo";
             }
             utenteDaModificare.getRuoli().add(ruolo);
             utenteRepository.save(utenteDaModificare);
-            return "Ruolo " + ruolo.getNomeRuolo() + " aggiunto all'utente con ID: " + idUtente;
+            return "✅ Ruolo " + ruolo.getNomeRuolo() + " aggiunto all'utente con ID: " + idUtente;
         } else if ("rimuovi".equalsIgnoreCase(operazione)) {
             if (!utenteDaModificare.getRuoli().contains(ruolo)){
-                return "L'utente non ha questo ruolo"; //se non ha il ruolo non lo puoi rimuovere.
+                return "❌ L'utente non ha questo ruolo"; //se non ha il ruolo non lo puoi rimuovere.
             }
-
+            utenteDaModificare.getRuoli().remove(ruolo);
+            utenteRepository.save(utenteDaModificare);
+            return "✅ Ruolo " + ruolo.getNomeRuolo() + " tolto all'utente con ID: " + idUtente;
+        }else {
+            return "⚠️ Operazione non valida! Usa 'aggiungi' o 'rimuovi'.";
         }
-
-    }*/
+    }
 
 
     public String rimuoviRuolo(Long idUtente, Long idRuolo){
@@ -108,10 +111,8 @@ public class UtenteService {
         Utente utente = new Utente();
         utente.setUsername(utenteRequest.getUsername());
         utente.setEmail(utenteRequest.getEmail());
-        if (!utenteRequest.getPassword().startsWith("$2a$10$")) {
-            utente.setPassword(passwordEncoder.encode(utenteRequest.getPassword()));
-        } else {
-            utente.setPassword(utenteRequest.getPassword());}
+        utente.setPassword(passwordEncoder.encode(utenteRequest.getPassword()));
+
         // Assegno il ruolo di default "ROLE_UTENTE"
         Ruolo ruolo = ruoloRepository.findById(1L) //Ruolo utente ha sempre id 1L.
                 .orElseThrow(() -> new RuntimeException("Ruolo di default non trovato"));

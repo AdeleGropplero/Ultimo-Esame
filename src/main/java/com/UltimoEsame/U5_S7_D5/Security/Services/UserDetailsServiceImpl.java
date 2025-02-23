@@ -17,8 +17,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //cerco utente tramite username
         System.out.println("searching for user: " + username);
-        Utente utente = utenteRepository.findByUsername(username).orElseThrow(()-> new RuntimeException("Utente non trovato"));
-        System.out.println("user found: " + utente.getUsername());
+        Utente utente = utenteRepository.findByUsername(username).orElseThrow(()-> new UsernameNotFoundException("Utente non trovato con email: " + username));
+        System.out.println("✅ Utente trovato: " + utente.getUsername());
+        System.out.println("🔑 Password nel DB (hashed): " + utente.getPassword());
         System.out.println(" user roles: " + utente.getRuoli());
         return UserDetailsImpl.costruisciDettagli(utente);//metodo nella classe udService passando l'utente trovado da username.
     }

@@ -2,21 +2,26 @@ package com.UltimoEsame.U5_S7_D5.Payload;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class EventoDTO {
-    @NotBlank
+    @NotBlank(message = "Il titolo non può essere vuoto")
     private String titolo;
 
     private String descrizione;
 
-    @NotBlank
+    @NotNull(message = "La data non può essere nulla")
     private LocalDate data;
 
-    @NotBlank
+    @NotBlank(message = "Il luogo non può essere vuoto")
     private String luogo;
 
     @Min(value = 1, message = "Il numero di posti deve essere maggiore di zero")

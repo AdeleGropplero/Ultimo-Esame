@@ -49,24 +49,18 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
         //se la richiesta presenta un JWT, la convalidiamo
         if (token != null && jwtUtils.validazioneJwtToken(token)){
-
             //recupero lo username con il metodo fatto nella calsse JwtUtils.
             String username = jwtUtils.recuperoUsernameDaToken(token);
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            //recupero userDetails da username -- Creiamo un oggetto authentication
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities()
+                );
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            //Creiamo adesso un oggetto USernamePasswordAuthenticationToken
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.getAuthorities()
-            );
-
-            //settare i dettagli dell'oggetto
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            }
         }
         // **IMPORTANTE**: permette alla richiesta di passare attraverso il filtro successivo
         filterChain.doFilter(request, response);

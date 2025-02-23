@@ -30,21 +30,25 @@ public class UserDetailsImpl implements UserDetails {
 
     //i ruoli vanno convertiti in granted authority (tramite il map), riconosciuto da Spring.
     public static UserDetailsImpl costruisciDettagli(Utente utente){
+        System.out.println("USERDETAILS PASSWORD: " + utente.getPassword());
+        System.out.println("ROLES: " + utente.getRuoli());
         List<GrantedAuthority> ruoliUtente = utente.getRuoli()
                         .stream().map(ruolo -> new SimpleGrantedAuthority(ruolo.getNomeRuolo().name()))
                         .collect(Collectors.toList());
+        System.out.println("FINALROLES: " + ruoliUtente);
+        System.out.println("Passwordo in userDetailsImpl: " + utente.getPassword());
         return new UserDetailsImpl(utente.getId(), utente.getUsername(), utente.getEmail(), utente.getPassword(), ruoliUtente);
     }
 
 
     @Override
     public String getPassword() {
-        return ""; //password
+        return password; //password
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return username;
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.UltimoEsame.U5_S7_D5.Ruolo.RuoloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -21,6 +22,9 @@ public class RunnerApp implements CommandLineRunner {
 
     @Autowired
     UtenteRepository utenteRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Value("${utente.admin.username}")
     private String username;
@@ -44,13 +48,13 @@ public class RunnerApp implements CommandLineRunner {
             }
         });
 
-
+/*
         //Successivamente ai ruoli mi salvo in DB già un utente con ruolo admin che ha
         //accesso a diversi endpoint.
         // Le credenziali dell'admin sono salvate nel properties.
-        Utente utente = new Utente(username, email, password);
+        Utente utente = new Utente(username, email, passwordEncoder.encode(password));
         Ruolo ruolo = ruoloService.getRuolo(3L); // L'admin ha id 3
         utente.setRuoli(new HashSet<>(Set.of(ruolo)));
-        utenteRepository.save(utente);
+        utenteRepository.save(utente);*/
     }
 }

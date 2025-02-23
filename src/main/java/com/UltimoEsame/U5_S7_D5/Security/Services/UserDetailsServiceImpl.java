@@ -16,7 +16,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //cerco utente tramite username
+        System.out.println("searching for user: " + username);
         Utente utente = utenteRepository.findByUsername(username).orElseThrow(()-> new RuntimeException("Utente non trovato"));
+        System.out.println("user found: " + utente.getUsername());
+        System.out.println(" user roles: " + utente.getRuoli());
         return UserDetailsImpl.costruisciDettagli(utente);//metodo nella classe udService passando l'utente trovado da username.
     }
 }

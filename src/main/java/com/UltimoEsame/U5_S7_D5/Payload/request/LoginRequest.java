@@ -15,3 +15,4 @@ public class LoginRequest {
     @Size(min = 3, max = 20)
     private String password;
 }
+

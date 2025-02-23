@@ -1,5 +1,6 @@
 package com.UltimoEsame.U5_S7_D5.Service;
 
+import com.UltimoEsame.U5_S7_D5.Payload.request.LoginRequest;
 import com.UltimoEsame.U5_S7_D5.Ruolo.ERuolo;
 import com.UltimoEsame.U5_S7_D5.Exception.EmailDuplicateException;
 import com.UltimoEsame.U5_S7_D5.Exception.UsernameDuplicateException;
@@ -9,8 +10,11 @@ import com.UltimoEsame.U5_S7_D5.Payload.UtenteDTO;
 import com.UltimoEsame.U5_S7_D5.Repository.UtenteRepository;
 import com.UltimoEsame.U5_S7_D5.Ruolo.Ruolo;
 import com.UltimoEsame.U5_S7_D5.Ruolo.RuoloRepository;
+import com.UltimoEsame.U5_S7_D5.Security.JWT.JwtUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +31,16 @@ public class UtenteService {
     RuoloRepository ruoloRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    PasswordEncoder passwordEncoder;
+
+/*    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    public UtenteService(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }*/
+
+    @Autowired
+    private JwtUtils jwtUtils;
 
     public void checkDuplicatedKey(String username, String email) {
         if (utenteRepository.existsByEmail(email)) {
@@ -92,11 +105,13 @@ public class UtenteService {
 
     public String insertUtente(RegistrationRequest utenteRequest) {
         checkDuplicatedKey(utenteRequest.getUsername(), utenteRequest.getEmail());
-        Utente utente = new Utente(
-                utenteRequest.getUsername(),
-                utenteRequest.getEmail(),
-                passwordEncoder.encode(utenteRequest.getPassword())
-        );
+        Utente utente = new Utente();
+        utente.setUsername(utenteRequest.getUsername());
+        utente.setEmail(utenteRequest.getEmail());
+        if (!utenteRequest.getPassword().startsWith("$2a$10$")) {
+            utente.setPassword(passwordEncoder.encode(utenteRequest.getPassword()));
+        } else {
+            utente.setPassword(utenteRequest.getPassword());}
         // Assegno il ruolo di default "ROLE_UTENTE"
         Ruolo ruolo = ruoloRepository.findById(1L) //Ruolo utente ha sempre id 1L.
                 .orElseThrow(() -> new RuntimeException("Ruolo di default non trovato"));
@@ -106,6 +121,20 @@ public class UtenteService {
         utenteRepository.save(utente);
         return "Utente " + utente.getUsername() + " inserito con ID: " + utente.getId();
     }
+
+
+/*    public String checkCredentialsAndGenerateToken(LoginRequest body) {
+
+        Utente found = utenteRepository.findByUsername(body.getUsername()).orElseThrow();
+        if (passwordEncoder.matches(body.getPassword(), found.getPassword())) {
+
+            return jwtUtils.createJwtToken((Authentication) found);
+        } else {
+
+            throw new RuntimeException("Credenziali errate!");
+        }
+
+    }*/
 
 
     //Travasi ----------------------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 package com.UltimoEsame.U5_S7_D5.Payload;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,8 +25,9 @@ public class EventoDTO {
     @NotBlank(message = "Il luogo non può essere vuoto")
     private String luogo;
 
+    @JsonProperty("nPosti")
     @Min(value = 1, message = "Il numero di posti deve essere maggiore di zero")
-    private int nPosti;
+    private Integer nPosti;
 
     @Min(value = 0, message = "Il costo del biglietto non può essere negativo")
     private double costoBiglietto;

@@ -53,16 +53,17 @@ public class UtenteService {
 
     //CRUD UTENTE ORGANIZZATORE-----(Vedi OrganizzatoreController)-----------------------------------------------------------------------------------
     // L'organizzatore può:
-    // CREARE eventi. (Post)
-    // VISUALIZZARE una lista eventi. (Get)
+    // CREARE eventi. (Post) //✅ gestito in evento service
+    // VISUALIZZARE una lista eventi. (Get) //gestito in evento service
     // VISUALIZZARE la lista dei suoi eventi con i posti rimasti. (Get)
     // MODIFICARE i propri eventi. (Patch)
     // CANCELLARE i propri eventi. (Delete)
 
 
+
     //CRUD UTENTE ADMIN-----(Vedi AdminController)-----------------------------------------------------------------------------------
     // L'admin può:
-    // MODIFICARE le autorizzazioni degli altri utenti.
+    //✅  MODIFICARE le autorizzazioni degli altri utenti.
 
     public String modificaRuoloUtente(Long idUtente, Long idRuolo, String operazione) {
         Utente utenteDaModificare = utenteRepository.findById(idUtente)
@@ -76,28 +77,20 @@ public class UtenteService {
                 return "❌ L'utente ha già questo ruolo";
             }
             utenteDaModificare.getRuoli().add(ruolo);
-            utenteRepository.save(utenteDaModificare);
+            //utenteRepository.save(utenteDaModificare); con transactional non serve perchè l'utente è già collegato con il database
             return "✅ Ruolo " + ruolo.getNomeRuolo() + " aggiunto all'utente con ID: " + idUtente;
         } else if ("rimuovi".equalsIgnoreCase(operazione)) {
             if (!utenteDaModificare.getRuoli().contains(ruolo)){
                 return "❌ L'utente non ha questo ruolo"; //se non ha il ruolo non lo puoi rimuovere.
             }
             utenteDaModificare.getRuoli().remove(ruolo);
-            utenteRepository.save(utenteDaModificare);
+
             return "✅ Ruolo " + ruolo.getNomeRuolo() + " tolto all'utente con ID: " + idUtente;
         }else {
             return "⚠️ Operazione non valida! Usa 'aggiungi' o 'rimuovi'.";
         }
     }
 
-
-    public String rimuoviRuolo(Long idUtente, Long idRuolo){
-        Utente utenteDaModificare = utenteRepository.findById(idUtente).orElseThrow(()-> new RuntimeException("Utente con non trovato"));
-        Ruolo nuovoRuolo = ruoloRepository.findById(idRuolo) //Ricordarsi di aggiungere la L di Long dopol'id Ruolo.
-                .orElseThrow(() -> new RuntimeException("Ruolo di default non trovato"));
-        utenteDaModificare.getRuoli().remove(nuovoRuolo);
-        return "Ruolo " + nuovoRuolo.getNomeRuolo() + " tolto all'utente con ID: " + idUtente;
-    }
 
     //CRUD UTENTE GENERICO-------(Vedi UtenteController)---------------------------------------------------------------------------------
     // L'utente semplice può solo:

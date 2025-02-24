@@ -31,7 +31,7 @@ public class Evento {
     private String luogo;
 
     @Column(name = "n_posti")
-    private int nPosti;
+    private Integer nPosti;
 
     private Double costoBiglietto;
 

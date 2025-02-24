@@ -62,7 +62,7 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()// Endpoint pubblici (registrazione/login)
-                        .requestMatchers("/utente/**").hasAuthority("ROLE_UTENTE") // Solo utenti
+                        .requestMatchers("/utente/**").permitAll()  // Endpoint utente accessibile senza autenticazione
                         .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/organizzatore/**").hasAuthority("ROLE_ORGANIZZATORE") // Solo organizzatori possono gestire eventi
                         .requestMatchers("/prenotazioni/**").hasAuthority("ROLE_USER")// Solo utenti possono prenotare

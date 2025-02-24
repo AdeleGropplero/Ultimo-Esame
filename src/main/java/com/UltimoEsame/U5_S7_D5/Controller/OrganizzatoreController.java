@@ -57,7 +57,26 @@ public class OrganizzatoreController {
         }
     }
 
+    @PatchMapping("/eventi/{idEvento}")
+    public ResponseEntity<EventoDTO> patchEvento(@PathVariable Long idEvento, @RequestBody EventoDTO eventoDTO) {
+        try {
+            Evento eventoAggiornato = eventoService.patchEvento(idEvento, eventoDTO);
+            EventoDTO eventoDTOResponse = eventoService.entity_dto(eventoAggiornato); // Uso metodo per convertire l'evento in DTO
+            return ResponseEntity.ok(eventoDTOResponse);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
     // POSTMAN --> Es: http://localhost:8080/organizzatore/eventi/2/1
     @DeleteMapping("/eventi/{idOrganizzatore}/{idEvento}")
-    public ResponseEntity<String> cancellaEvento
+    public ResponseEntity<String> cancellaEvento(@PathVariable Long idOrganizzatore, @PathVariable Long idEvento){
+        try {
+            String lista = eventoService.cancellaEvento(idEvento, idOrganizzatore);
+            return ResponseEntity.ok(lista);
+        } catch (RuntimeException e) {
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }

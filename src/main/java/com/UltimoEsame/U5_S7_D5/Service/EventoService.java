@@ -68,6 +68,36 @@ public class EventoService {
         return sb.toString();
     }
 
+    public Evento patchEvento(Long idEvento, EventoDTO eventoDTO) {
+        Evento evento = eventoRepository.findById(idEvento)
+                .orElseThrow(() -> new RuntimeException("Evento non trovato con ID " + idEvento));
+
+        // Verifica e aggiorna solo i campi che sono stati forniti nel DTO
+        if (eventoDTO.getTitolo() != null) {
+            evento.setTitolo(eventoDTO.getTitolo());
+        }
+        if (eventoDTO.getDescrizione() != null) {
+            evento.setDescrizione(eventoDTO.getDescrizione());
+        }
+        if (eventoDTO.getData() != null) {
+            evento.setData(eventoDTO.getData());
+        }
+        if (eventoDTO.getLuogo() != null) {
+            evento.setLuogo(eventoDTO.getLuogo());
+        }
+        if (eventoDTO.getNPosti() != null) {
+            evento.setNPosti(eventoDTO.getNPosti());
+        }
+        if (eventoDTO.getCostoBiglietto() >= 0) {
+            evento.setCostoBiglietto(eventoDTO.getCostoBiglietto());
+        }
+
+        // L'organizzatore non deve essere aggiornato, quindi non includiamo alcuna modifica per il campo 'organizzatore'
+
+        return eventoRepository.save(evento);
+    }
+
+
     public String cancellaEvento(Long idEvento, Long idOrganizzatore){
         Evento evento = eventoRepository.findById(idEvento)
                 .orElseThrow(() -> new RuntimeException("Nessun evento trovato con ID " + idEvento));

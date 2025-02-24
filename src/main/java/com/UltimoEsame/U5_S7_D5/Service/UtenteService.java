@@ -1,6 +1,9 @@
 package com.UltimoEsame.U5_S7_D5.Service;
 
+import com.UltimoEsame.U5_S7_D5.Model.Evento;
+import com.UltimoEsame.U5_S7_D5.Payload.EventoDTO;
 import com.UltimoEsame.U5_S7_D5.Payload.request.LoginRequest;
+import com.UltimoEsame.U5_S7_D5.Repository.EventoRepository;
 import com.UltimoEsame.U5_S7_D5.Ruolo.ERuolo;
 import com.UltimoEsame.U5_S7_D5.Exception.EmailDuplicateException;
 import com.UltimoEsame.U5_S7_D5.Exception.UsernameDuplicateException;
@@ -19,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -26,6 +30,9 @@ import java.util.Set;
 public class UtenteService {
     @Autowired
     UtenteRepository utenteRepository;
+
+    @Autowired
+    EventoRepository eventoRepository;
 
     @Autowired
     RuoloRepository ruoloRepository;
@@ -51,7 +58,7 @@ public class UtenteService {
         }
     }
 
-    //CRUD UTENTE ORGANIZZATORE-----(Vedi OrganizzatoreController)-----------------------------------------------------------------------------------
+    //CRUD ORGANIZZATORE-----(Vedi OrganizzatoreController)-----------------------------------------------------------------------------------
     // L'organizzatore può:
     // CREARE eventi. (Post) //✅ gestito in evento service
     // VISUALIZZARE una lista eventi. (Get) //gestito in evento service
@@ -61,7 +68,7 @@ public class UtenteService {
 
 
 
-    //CRUD UTENTE ADMIN-----(Vedi AdminController)-----------------------------------------------------------------------------------
+    //CRUD ADMIN-----(Vedi AdminController)-----------------------------------------------------------------------------------
     // L'admin può:
     //✅  MODIFICARE le autorizzazioni degli altri utenti.
 
@@ -94,7 +101,7 @@ public class UtenteService {
 
     //CRUD UTENTE GENERICO-------(Vedi UtenteController)---------------------------------------------------------------------------------
     // L'utente semplice può solo:
-    // VISUALIZZARE una lista eventi. (Get)
+    // VISUALIZZARE una lista eventi. (Get) ✅
     // PRENOTARE posti agli eventi disponibili (check sulla disponibilità). (Post)
     // (EXTRA) VISUALIZZARE eventi prenotati. (Get)
     // (EXTRA) ANNULLARE la prenotazione. (Delete)
@@ -114,6 +121,16 @@ public class UtenteService {
 
         utenteRepository.save(utente);
         return "Utente " + utente.getUsername() + " inserito con ID: " + utente.getId();
+    }
+
+    public String visualizzaEventi(){
+        List<Evento> eventi = eventoRepository.findAll();
+        StringBuilder sb = new StringBuilder();
+        eventi.forEach(evento -> {
+            EventoDTO dto = entity_dto(evento);
+            sb.append(dto.toString()).append("\n");
+        });
+        return sb.toString();
     }
 
 
@@ -145,6 +162,18 @@ public class UtenteService {
         utenteDTO.setUsername(utente.getUsername());
         utenteDTO.setEmail(utente.getEmail());
         return utenteDTO;
+    }
+
+    public EventoDTO entity_dto(Evento evento) {
+        return new EventoDTO(
+                evento.getTitolo(),
+                evento.getDescrizione(),
+                evento.getData(),
+                evento.getLuogo(),
+                evento.getNPosti(),
+                evento.getCostoBiglietto(),
+                evento.getOrganizzatore().getId() // Passiamo l'ID dell'organizzatore
+        );
     }
 
 

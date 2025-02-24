@@ -23,8 +23,8 @@ public class EventoService {
     // CREARE eventi. (Post) //✅
     // VISUALIZZARE una lista eventi. (Get) //✅
     // VISUALIZZARE la lista dei suoi eventi con i posti rimasti. (Get) //✅
-    // MODIFICARE i propri eventi. (Patch)
-    // CANCELLARE i propri eventi. (Delete)
+    // MODIFICARE i propri eventi. (Patch) //✅
+    // CANCELLARE i propri eventi. (Delete) //✅
 
     public String creaEvento(EventoDTO eventoDTO) {
         // Recupera l'organizzatore dall'ID
@@ -47,7 +47,7 @@ public class EventoService {
         return dto.toString();
     }
 
-    public String visualizzaEventi(){
+    public String visualizzaEventi() {
         List<Evento> eventi = eventoRepository.findAll();
         StringBuilder sb = new StringBuilder();
         eventi.forEach(evento -> {
@@ -57,7 +57,7 @@ public class EventoService {
         return sb.toString();
     }
 
-    public String visualizzaEventiPersonali(Long idOrganizzatore){
+    public String visualizzaEventiPersonali(Long idOrganizzatore) {
         List<Evento> eventi = eventoRepository.findAllByOrganizzatoreId(idOrganizzatore)
                 .orElseThrow(() -> new RuntimeException("Nessun evento trovato per l'organizzatore con ID " + idOrganizzatore));
 
@@ -99,7 +99,7 @@ public class EventoService {
     }
 
 
-    public String cancellaEvento(Long idEvento, Long idOrganizzatore){
+    public String cancellaEvento(Long idEvento, Long idOrganizzatore) {
         Evento evento = eventoRepository.findById(idEvento)
                 .orElseThrow(() -> new RuntimeException("Nessun evento trovato con ID " + idEvento));
         // Verifica che l'organizzatore che sta cercando di cancellare l'evento sia lo stesso che l'ha creato

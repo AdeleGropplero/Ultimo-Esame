@@ -12,7 +12,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Builder
 @Table(name = "prenotazioni")
 public class Prenotazione {
     @Id
@@ -28,11 +27,11 @@ public class Prenotazione {
     @JoinColumn(name = "evento_id", nullable = false)
     private Evento evento;
 
-    private int nPostiPrenotati;
+    private Integer nPostiPrenotati;
 
-    private double spesa;
+    private Double spesa;
 
-    public Prenotazione(Utente utente, Evento evento, int nPostiPrenotati, double spesa) {
+    public Prenotazione(Utente utente, Evento evento, Integer nPostiPrenotati) {
         if (evento == null) {
             throw new IllegalArgumentException("L'evento non può essere null");
         }

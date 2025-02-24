@@ -26,7 +26,7 @@ public class EventoService {
     // MODIFICARE i propri eventi. (Patch)
     // CANCELLARE i propri eventi. (Delete)
 
-    public Evento creaEvento(EventoDTO eventoDTO) {
+    public String creaEvento(EventoDTO eventoDTO) {
         // Recupera l'organizzatore dall'ID
         Utente organizzatore = utenteRepository.findById(eventoDTO.getOrganizzatoreId())
                 .orElseThrow(() -> new RuntimeException("Organizzatore non trovato"));
@@ -42,8 +42,9 @@ public class EventoService {
                 .organizzatore(organizzatore)
                 .build();
 
-        // Salva l'evento nel database
-        return eventoRepository.save(evento);
+        EventoDTO dto = entity_dto(evento);
+        eventoRepository.save(evento);
+        return dto.toString();
     }
 
     public String visualizzaEventi(){

@@ -23,8 +23,8 @@ public class OrganizzatoreController {
         System.out.println("Ricevuto JSON: " + eventoDTO);
         System.out.println("nPosti ricevuto: " + eventoDTO.getNPosti());
         try {
-            Evento eventoCreato = eventoService.creaEvento(eventoDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(eventoCreato);
+            String evento = eventoService.creaEvento(eventoDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(evento);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
